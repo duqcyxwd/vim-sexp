@@ -1357,6 +1357,58 @@ function! s:set_marks_around_adjacent_element(mode, next)
     call s:setcursor(cursor)
 endfunction
 
+
+function! s:set_marks_to_end_of_list(mode, offset, allow_expansion)
+    " TODO Change this to have line limit option
+    " echom "XXXA set_marks_to_end_of_list"
+    let cursor = getpos('.')
+    let cursor_moved = 0
+
+
+    let visual = a:mode ==? 'v'
+
+
+    let success = 0
+
+
+    let ignored = s:syntax_match(s:ignored_region, cursor[1], cursor[2])
+    let char = getline(cursor[1])[cursor[2] - 1]
+
+    if !ignored && char =~# s:opening_bracket
+        let open = cursor
+        let close = s:pos_with_col_offset(s:nearest_bracket(1), 0)
+
+    elseif !ignored && char =~# s:closing_bracket
+         " echom "closing"
+         let success = 0
+         let open = [0, 0, 0, 0]
+         let close = [0, 0, 0, 0]
+    else
+        " echom "else"
+        let open = cursor
+        let close = s:pos_with_col_offset(s:nearest_bracket(1), -a:offset)
+    endif
+
+
+    " Inner selection on adjacent brackets results in open being one character
+    " past close due to offset calculations
+    if open[1] > 0 && close[1] > 0 && s:compare_pos(open, close) < 0
+        call s:set_visual_marks([open, close])
+        let success = 1
+    " Don't erase marks when in visual mode
+    elseif !visual
+        delmarks < >
+    endif
+
+    if cursor_moved
+        call s:setcursor(cursor)
+    endif
+
+    " echom "Success"
+    " echom success
+    return success
+endfunction
+
 " Enter characterwise visual mode with current visual marks, unless '< is
 " invalid and mode equals 'o'.
 " Optional Arg:
@@ -1433,6 +1485,14 @@ endfunction
 " Set visual marks around current element and enter visual mode.
 function! sexp#select_current_element(mode, inner)
     call s:set_marks_around_current_element(a:mode, a:inner)
+    return s:select_current_marks(a:mode)
+endfunction
+
+
+" Set visual marks from current position to end of list
+function! sexp#select_current_element_to_end(mode, offset, allow_expansion)
+    " echom "XXX sexp#select_current_element_to_end"
+    call s:set_marks_to_end_of_list(a:mode, a:offset, a:allow_expansion)
     return s:select_current_marks(a:mode)
 endfunction
 
@@ -1868,6 +1928,18 @@ function! sexp#raise(mode, func, ...)
     normal! d
     call sexp#select_current_list('n', 0, 0)
     normal! p
+endfunction
+
+" new funcion for sexp kill
+function! sexp#kill(mode, func, ...)
+    " XXX NEW FUNCITON KILL
+    " TODO when cursor in on endding ()
+    if a:mode ==# 'v'
+        call s:select_current_marks('v')
+    else
+        call call(a:func, a:000)
+    endif
+    normal! d
 endfunction
 
 " Logic:

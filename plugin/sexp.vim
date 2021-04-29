@@ -386,6 +386,10 @@ Defplug  xnoremap sexp_raise_list    sexp#docount(v:count, 'sexp#raise', 'v', ''
 Defplug! nnoremap sexp_raise_element sexp#docount(v:count, 'sexp#raise', 'n', 'sexp#select_current_element', 'n', 1)
 Defplug  xnoremap sexp_raise_element sexp#docount(v:count, 'sexp#raise', 'v', '')
 
+" sexp kill
+Defplug! nnoremap sexp_kill sexp#docount(v:count, 'sexp#kill', 'n', 'sexp#select_current_element_to_end', 'n', 1, 0)
+Defplug  xnoremap sexp_kill sexp#docount(v:count, 'sexp#kill', 'v', '')
+
 " Convolute
 " Note: convolute takes pains to preserve cursor position: hence, 'nojump'.
 DefplugN! nnoremap sexp_convolute sexp#convolute(v:count, 'n')
