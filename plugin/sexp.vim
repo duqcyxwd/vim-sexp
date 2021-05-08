@@ -281,6 +281,15 @@ Defplug  nnoremap sexp_move_to_next_bracket sexp#docount(v:count, 'sexp#move_to_
 DEFPLUG  xnoremap sexp_move_to_next_bracket <Esc>:<C-u>call sexp#docount(v:prevcount, 'sexp#move_to_nearest_bracket', 'v', 1)<CR>
 Defplug! onoremap sexp_move_to_next_bracket sexp#move_to_nearest_bracket('o', 1)
 
+
+" TODO Move before (
+Defplug  nnoremap sexp_move_to_list_head sexp#docount(v:count, 'sexp#move_to_nearest_bracket', 'n', 0)
+DEFPLUG  xnoremap sexp_move_to_list_head <Esc>:<C-u>call sexp#docount(v:prevcount, 'sexp#move_to_nearest_bracket', 'v', 0)<CR>
+Defplug! onoremap sexp_move_to_list_head sexp#move_to_nearest_bracket('o', 0)
+Defplug  nnoremap sexp_move_to_list_end sexp#docount(v:count, 'sexp#move_to_nearest_bracket', 'n', 1)
+DEFPLUG  xnoremap sexp_move_to_list_end <Esc>:<C-u>call sexp#docount(v:prevcount, 'sexp#move_to_nearest_bracket', 'v', 1)<CR>
+Defplug! onoremap sexp_move_to_list_end sexp#move_to_nearest_bracket('o', 1)
+
 " Adjacent element head
 "
 " Visual mappings must break out of visual mode in order to detect which end

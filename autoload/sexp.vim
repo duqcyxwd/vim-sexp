@@ -1112,8 +1112,8 @@ function! sexp#insert_at_list_terminal(end)
             startinsert!
             return
         " Add headspace unless there's already some there
-        elseif nextchar !~# '\v\s'
-            execute 'normal! a '
+        " elseif nextchar !~# '\v\s'
+        "     execute 'normal! a '
         " Else start after the bracket
         else
             normal! l
