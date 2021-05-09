@@ -878,22 +878,17 @@ function! sexp#move_to_nearest_bracket(mode, next)
         let cursor = getpos('.')
         let bracket = getline(cursor[1])[cursor[2] - 1]
 
-        call s:move_to_current_element_terminal(1)
-        let pos = s:nearest_bracket(1)
-
-        if pos[1] < 1 || (bracket =~# s:closing_bracket
-                          \ && cursor[1] == pos[1]
-                          \ && cursor[2] == pos[2] - 1)
+        let end_bracket = s:nearest_bracket(1)
+        if end_bracket[1] < 1 || (bracket =~# s:closing_bracket
+                          \ && cursor[1] == end_bracket[1]
+                          \ && cursor[2] == end_bracket[2])
             call s:setcursor(cursor)
+            echom 'return 0000'
             return [0, 0, 0, 0]
         endif
 
-        let start = getline(cursor[1])[cursor[2] - 1] =~# s:opening_bracket
-                    \ ? cursor
-                    \ : s:pos_with_col_offset(cursor, 1)
-        call s:set_visual_marks([start, s:pos_with_col_offset(pos, -1)])
-        call s:select_current_marks('o')
-        return pos
+        call s:set_visual_marks([cursor, end_bracket])
+        return s:select_current_marks('o')
     else
         return s:move_to_nearest_bracket(a:next)
     endif
