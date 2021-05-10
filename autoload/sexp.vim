@@ -894,6 +894,51 @@ function! sexp#move_to_nearest_bracket(mode, next)
     endif
 endfunction
 
+function! sexp#move_to_end_of_line_with_form(mode, count, next, tail, top)
+    if a:mode ==? 'n'
+        let cursor = getpos('.')
+
+        let next_element_head=s:nearest_element_terminal(a:next, 0)
+
+        if cursor[1] != next_element_head[1]
+            return 0
+        endif
+
+        let post=s:move_to_adjacent_element (a:next, a:tail, a:top)
+
+        if cursor[1] == post[1] && cursor[2] == post[2]
+            return 0
+        else
+            call sexp#move_to_end_of_line_with_form(a:mode, a:count, a:next, a:tail, a:top)
+        endif
+        return 0
+    elseif a:mode ==? 'v'
+        " TODO
+        return sexp#docount(a:count, 's:move_cursor_extending_selection', 's:move_to_adjacent_element', a:next, a:tail, a:top)
+    elseif a:mode ==? 'o'
+        let cursor = getpos('.')
+        " call sexp#docount(a:count, 's:move_to_adjacent_element', a:next, a:tail, a:top)
+        call sexp#move_to_end_of_line_with_form('n', a:count, a:next, a:tail, a:top)
+        let pos = getpos('.')
+        let nomove = s:compare_pos(cursor, pos) == 0
+
+        " Bail out if the cursor has not moved and is resting on a delimiter
+        if nomove && getline(pos[1])[pos[2] - 1] =~ s:delimiter
+            return 0
+        " Inclusive when:
+        "   * Moving to tail
+        "   * Moving forward to head but ending on tail because we are bounded
+        "   * Same as above, but element is a single character so head == tail
+        elseif a:tail
+            \ || (a:next && s:compare_pos(pos, s:current_element_terminal(0)) != 0)
+            \ || (a:next && nomove)
+            " We make selections inclusive by entering visual mode
+            call s:set_visual_marks([cursor, pos])
+            return s:select_current_marks('o')
+        endif
+    endif
+endfunction
+
 " Calls s:move_to_adjacent_element count times, with the following additional
 " behaviours:
 "
