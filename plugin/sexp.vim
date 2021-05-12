@@ -312,6 +312,10 @@ DefplugN  nnoremap sexp_move_to_next_element_tail sexp#move_to_adjacent_element(
 DEFPLUG   xnoremap sexp_move_to_next_element_tail <Esc>:<C-u>call sexp#move_to_adjacent_element('v', v:prevcount, 1, 1, 0)<CR>
 DefplugN! onoremap sexp_move_to_next_element_tail sexp#move_to_adjacent_element('o', v:count, 1, 1, 0)
 
+DefplugN  nnoremap sexp_move_to_end_of_line_with_form sexp#move_to_end_of_line_with_form('n', v:count, 1, 1, 0)
+DEFPLUG   xnoremap sexp_move_to_end_of_line_with_form <Esc>:<C-u>call sexp#move_to_end_of_line_with_form('v', v:prevcount, 1, 1, 0)<CR>
+DefplugN! onoremap sexp_move_to_end_of_line_with_form sexp#move_to_end_of_line_with_form('o', v:count, 1, 1, 0)
+
 " List flow commands
 Defplug   nnoremap sexp_flow_to_prev_close sexp#list_flow('n', v:count, 0, 1)
 DEFPLUG   xnoremap sexp_flow_to_prev_close <Esc>:<C-u>call sexp#list_flow('v', v:prevcount, 0, 1)<CR>

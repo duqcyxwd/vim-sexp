@@ -911,9 +911,10 @@ function! s:move_to_end_of_line_with_form_impl(mode, count, next, tail, top)
         let next_tail=s:nearest_element_terminal(a:next, 1)
 
         if cursor[1] != next_head[1]
-            if getline('.')[col('.') - 1] =~# s:opening_bracket
-                " Start with bracket
-                " Next head is different
+            if getline('.')[col('.') - 1] =~# s:opening_bracket || s:setcursor(next_tail)
+                " return next_tail when:
+                " 1. the next_tail is in same line
+                " 2. current curosr is an open bracket
                 call s:setcursor(next_tail)
                 return next_tail
             else
